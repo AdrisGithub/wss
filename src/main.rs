@@ -1,13 +1,9 @@
+use std::fmt::Error;
+
+use crate::net::server::Server;
+
 pub mod net;
 
-fn main() {
-    net::server::read();
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+fn main() -> Result<(), Error> {
+    Server::default().start()
 }
