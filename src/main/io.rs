@@ -6,13 +6,16 @@ use aul::{log, log_info};
 use aul::level::Level;
 use aul::log_error;
 
+use crate::error::WSSError;
+
 const DIRECTORY: &str = "./files";
 
-pub fn init() {
+pub fn init() -> Result<(), WSSError> {
     let dir = read_dir(DIRECTORY);
     if dir.is_err() {
-        let _ = create_dir(DIRECTORY);
+        create_dir(DIRECTORY)?;
     }
+    Ok(())
 }
 
 
@@ -27,8 +30,8 @@ pub fn get_actual_path(path: &str) -> String {
 }
 
 pub fn create_file(path: &str, content: &String) -> bool {
-    if get_file(path).is_some(){
-        return false
+    if get_file(path).is_some() {
+        return false;
     }
     let created = File::create(get_actual_path(path))
         .map_err(|err| log_error!("{}",err))
@@ -41,8 +44,8 @@ pub fn create_file(path: &str, content: &String) -> bool {
 }
 
 pub fn edit_file(path: &str, content: &String) -> bool {
-    if get_file(path).is_none(){
-        return false
+    if get_file(path).is_none() {
+        return false;
     }
     if let Ok(mut file) = File::create(get_actual_path(path)).map_err(|err| log_error!("{}",err)) {
         log_info!("{}",content);
