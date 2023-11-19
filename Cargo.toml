@@ -10,3 +10,5 @@ path = "src/main/main.rs"
 name = "wss"
 
 [dependencies]
+aul = "1.2.0"
+whdp = "1.0.1"
