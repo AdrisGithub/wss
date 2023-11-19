@@ -1,11 +1,16 @@
 use std::fmt::Write;
+use std::io::Write as Writes;
 use std::net::TcpListener;
 use std::thread;
-use std::io::Write as Writes;
+
+use aul::level::Level;
+use aul::log;
+use aul::log_info;
 use whdp::{HttpMethod, HttpParseError, Request, Response, TryRequest};
-use whdp::resp_presets::{bad_request as build_bad_request, not_found, not_implemented, ok};
+use whdp::resp_presets::{bad_request as build_bad_request, created, no_content, not_found, not_implemented, ok};
 
 use crate::error::WSSError;
+use crate::io::{create_file, delete_file, edit_file};
 
 mod error;
 mod io;
@@ -33,11 +38,12 @@ fn bad_request(req: Result<Request, HttpParseError>) -> String {
 }
 
 fn handle_connection(req: Request) -> Response {
+    log_info!("{}",req);
     match req.get_method() {
-        HttpMethod::Post => handle_not_implemented(req),
+        HttpMethod::Post => handle_post(req),
         HttpMethod::Get => handle_get(req),
-        HttpMethod::Put => handle_not_implemented(req),
-        HttpMethod::Delete => handle_not_implemented(req),
+        HttpMethod::Put => handle_put(req),
+        HttpMethod::Delete => handle_delete(req),
         _ => handle_not_implemented(req)
     }
 }
@@ -55,4 +61,25 @@ fn handle_get(req: Request) -> Response {
     } else {
         not_found("".into())
     }
+}
+
+fn handle_post(req: Request) -> Response {
+    if create_file(req.get_uri(), req.get_body()) {
+        created("".into())
+    } else {
+        build_bad_request("File alr exists".into())
+    }
+}
+
+fn handle_put(req: Request) -> Response {
+    if edit_file(req.get_uri(), req.get_body()) {
+        no_content("".into())
+    } else {
+        build_bad_request("File doesn't exist exists".into())
+    }
+}
+
+fn handle_delete(request: Request) -> Response {
+    delete_file(request.get_uri());
+    no_content("".into())
 }
