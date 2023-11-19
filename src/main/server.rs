@@ -1,4 +1,4 @@
-use std::fmt::Write as Fwrite;
+use std::fmt::{Debug, Write as write};
 use std::io::Write;
 use std::net::{TcpListener, ToSocketAddrs};
 use std::thread;
@@ -17,8 +17,9 @@ pub struct Server {
 }
 
 impl Server {
-    pub fn init<T: ToSocketAddrs>(addr: T) -> Result<Self, WSSError> {
-        let listener = TcpListener::bind(addr).map_err(WSSError::from)?;
+    pub fn init<T: ToSocketAddrs+Debug>(addr: T) -> Result<Self, WSSError> {
+        let listener = TcpListener::bind(&addr).map_err(WSSError::from)?;
+        log_info!("Server listening on {:?}",listener.local_addr().map_err(WSSError::from)?);
         Ok(Self {
             listener
         })
