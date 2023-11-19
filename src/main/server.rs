@@ -40,7 +40,7 @@ impl Server {
 }
 
 fn handle_connection(req: Request) -> Response {
-    log_info!("{}",req);
+    log_info!("{} {} {}",req.get_method(),req.get_uri(),req.get_version());
     match req.get_method() {
         HttpMethod::Post => handle_post(req),
         HttpMethod::Get => handle_get(req),
