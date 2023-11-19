@@ -67,7 +67,7 @@ fn handle_post(req: Request) -> Response {
     if create_file(req.get_uri(), req.get_body()) {
         created("".into())
     } else {
-        build_bad_request("File alr exists".into())
+        build_bad_request("File already exists".into())
     }
 }
 
@@ -75,7 +75,7 @@ fn handle_put(req: Request) -> Response {
     if edit_file(req.get_uri(), req.get_body()) {
         no_content("".into())
     } else {
-        build_bad_request("File doesn't exist exists".into())
+        build_bad_request("File doesn't exist".into())
     }
 }
 

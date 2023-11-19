@@ -17,8 +17,8 @@ pub fn init() {
 
 
 pub fn get_file(path: &str) -> Option<String> {
+    log_info!("Accessing: {}",path);
     read_to_string(get_actual_path(path))
-        .map(|str|{log_info!("{}",str); str})
         .map_err(|err| println!("{}", err)).ok()
 }
 
@@ -27,6 +27,9 @@ pub fn get_actual_path(path: &str) -> String {
 }
 
 pub fn create_file(path: &str, content: &String) -> bool {
+    if get_file(path).is_some(){
+        return false
+    }
     let created = File::create(get_actual_path(path))
         .map_err(|err| log_error!("{}",err))
         .is_ok();
@@ -38,6 +41,9 @@ pub fn create_file(path: &str, content: &String) -> bool {
 }
 
 pub fn edit_file(path: &str, content: &String) -> bool {
+    if get_file(path).is_none(){
+        return false
+    }
     if let Ok(mut file) = File::create(get_actual_path(path)).map_err(|err| log_error!("{}",err)) {
         log_info!("{}",content);
         log_error!("{:?}",file.write(content.as_bytes()));
