@@ -21,8 +21,7 @@ pub fn init() -> Result<(), WSSError> {
 
 pub fn get_file(path: &str) -> Option<String> {
     log_info!("Accessing: {}",path);
-    read_to_string(get_actual_path(path))
-        .map_err(|err| println!("{}", err)).ok()
+    read_to_string(get_actual_path(path)).ok()
 }
 
 pub fn get_actual_path(path: &str) -> String {
@@ -48,10 +47,7 @@ pub fn edit_file(path: &str, content: &String) -> bool {
         return false;
     }
     if let Ok(mut file) = File::create(get_actual_path(path)).map_err(|err| log_error!("{}",err)) {
-        log_info!("{}",content);
-        log_error!("{:?}",file.write(content.as_bytes()));
-        log_error!("{:?}",file.flush());
-        true
+        file.write_all(content.as_bytes()).is_ok()
     } else {
         false
     }
