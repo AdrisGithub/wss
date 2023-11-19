@@ -11,7 +11,7 @@ name = "wss"
 
 [dependencies]
 aul = "1.2.0"
-whdp = "1.1.1"
+whdp = "1.1.5"
 
 [features]
 no-color = ["aul/no-color"]

@@ -88,9 +88,9 @@ dependencies = [
 
 [[package]]
 name = "whdp"
-version = "1.1.1"
+version = "1.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74ae6c874a47c5b8e72ed9410fb9940ed60dae6dd8cdbac1384c6aa01e7a4482"
+checksum = "7568bae36b381476ad28d1483068e421fee88f579fcfcbc804d5cf24eac702d4"
 
 [[package]]
 name = "windows-sys"
