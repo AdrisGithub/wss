@@ -1,9 +1,9 @@
-use std::io::Write;
+use std::fmt::Write;
 use std::net::TcpListener;
 use std::thread;
-
-use whdp::{HttpParseError, Request, Response, TryRequest};
-use whdp::resp_presets::{bad_request as build_bad_request, not_found, ok};
+use std::io::Write as Writes;
+use whdp::{HttpMethod, HttpParseError, Request, Response, TryRequest};
+use whdp::resp_presets::{bad_request as build_bad_request, not_found, not_implemented, ok};
 
 use crate::error::WSSError;
 
@@ -25,8 +25,6 @@ fn main() -> Result<(), WSSError> {
             let _ = stream.write_all(bad_request(req).as_bytes());
         }
     }
-
-
     Ok(())
 }
 
@@ -35,10 +33,26 @@ fn bad_request(req: Result<Request, HttpParseError>) -> String {
 }
 
 fn handle_connection(req: Request) -> Response {
+    match req.get_method() {
+        HttpMethod::Post => handle_not_implemented(req),
+        HttpMethod::Get => handle_get(req),
+        HttpMethod::Put => handle_not_implemented(req),
+        HttpMethod::Delete => handle_not_implemented(req),
+        _ => handle_not_implemented(req)
+    }
+}
+
+fn handle_not_implemented(request: Request) -> Response {
+    let mut string = String::new();
+    let _ = write!(string, "Method: {} is not implemented", request.get_method());
+    not_implemented(string)
+}
+
+fn handle_get(req: Request) -> Response {
     let content = io::get_file(req.get_uri());
-    if let Some(content) = content{
+    if let Some(content) = content {
         ok(content)
-    }else{
+    } else {
         not_found("".into())
     }
 }
