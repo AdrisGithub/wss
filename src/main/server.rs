@@ -2,10 +2,7 @@ use std::fmt::{Debug, Write as write};
 use std::io::Write;
 use std::net::{TcpListener, ToSocketAddrs};
 use std::thread;
-
-use aul::level::Level;
-use aul::log;
-use aul::log_info;
+use aul::info;
 use whdp::{HttpMethod, HttpParseError, Request, Response, TryRequest};
 use whdp::resp_presets::{bad_request as build_bad_request, created, no_content, not_found, not_implemented, ok};
 
@@ -19,7 +16,7 @@ pub struct Server {
 impl Server {
     pub fn init<T: ToSocketAddrs+Debug>(addr: T) -> Result<Self, WSSError> {
         let listener = TcpListener::bind(&addr).map_err(WSSError::from)?;
-        log_info!("Server listening on {:?}",listener.local_addr().map_err(WSSError::from)?);
+        info!("Server listening on {:?}",listener.local_addr().map_err(WSSError::from)?);
         Ok(Self {
             listener
         })
@@ -40,7 +37,7 @@ impl Server {
 }
 
 fn handle_connection(req: Request) -> Response {
-    log_info!("{} {} {}",req.get_method(),req.get_uri(),req.get_version());
+    info!("{} {} {}",req.get_method(),req.get_uri(),req.get_version());
     match req.get_method() {
         HttpMethod::Post => handle_post(req),
         HttpMethod::Get => handle_get(req),

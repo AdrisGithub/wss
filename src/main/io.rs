@@ -1,10 +1,7 @@
 use std::fs::{create_dir, File, read_dir, read_to_string, remove_file};
 use std::io::Write;
 use std::ops::Add;
-
-use aul::{log, log_info};
-use aul::level::Level;
-use aul::log_error;
+use aul::{error, info};
 
 use crate::error::WSSError;
 
@@ -20,7 +17,7 @@ pub fn init() -> Result<(), WSSError> {
 
 
 pub fn get_file(path: &str) -> Option<String> {
-    log_info!("Accessing: {}",path);
+    info!("Accessing: {}",path);
     read_to_string(get_actual_path(path)).ok()
 }
 
@@ -33,7 +30,7 @@ pub fn create_file(path: &str, content: &String) -> bool {
         return false;
     }
     let created = File::create(get_actual_path(path))
-        .map_err(|err| log_error!("{}",err))
+        .map_err(|err| {error!("{}",err);})
         .is_ok();
     if created {
         edit_file(path, content)
@@ -46,7 +43,7 @@ pub fn edit_file(path: &str, content: &String) -> bool {
     if get_file(path).is_none() {
         return false;
     }
-    if let Ok(mut file) = File::create(get_actual_path(path)).map_err(|err| log_error!("{}",err)) {
+    if let Ok(mut file) = File::create(get_actual_path(path)).map_err(|err| {error!("{}",err);}) {
         file.write_all(content.as_bytes()).is_ok()
     } else {
         false

@@ -1,9 +1,5 @@
 use std::fs::read_to_string;
-
-use aul::{log, log_error};
-use aul::level::Level;
-use aul::log_info;
-
+use aul::{error, info};
 use crate::error::WSSError;
 
 const CONFIG_FILE: &str = ".config";
@@ -16,13 +12,13 @@ pub fn init() {
             let _ = set_variable(split.next(), split.next());
         }
     } else {
-        log_info!("No .config file provided will resort back to standard values and env. variables");
+        info!("No .config file provided will resort back to standard values and env. variables");
     }
 }
 
 pub fn get_env(key: &str) -> Option<String> {
     std::env::var(key)
-        .map_err(|err| log_error!("{}",err))
+        .map_err(|err| {error!("{}",err);})
         .ok()
 }
 

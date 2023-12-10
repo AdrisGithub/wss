@@ -1,4 +1,6 @@
-use aul::log_error;
+use std::str::FromStr;
+use aul::error;
+
 use crate::config::get_env;
 use crate::error::WSSError;
 use crate::server::Server;
@@ -7,7 +9,6 @@ mod error;
 mod io;
 mod server;
 mod config;
-
 
 const ADDRESS: &str = "0.0.0.0";
 const PORT: &str = "PORT";
@@ -29,9 +30,9 @@ fn get_port() -> u16 {
         if let Ok(res) = res {
             return res;
         }
-        log_error!("Couldn't parse given PORT: {}",env)
+        error!("Couldn't parse given PORT: {}",env);
     } else {
-        log_error!("There was no env variable PORT provided resorting back to standard {}",DEFAULT);
+        error!("There was no env variable PORT provided resorting back to standard {}",DEFAULT);
     }
     DEFAULT
 }
