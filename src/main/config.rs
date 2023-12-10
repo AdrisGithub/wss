@@ -1,5 +1,9 @@
 use std::fs::read_to_string;
+
 use aul::{error, info};
+use aul::level::Level;
+use aul::log;
+
 use crate::error::WSSError;
 
 const CONFIG_FILE: &str = ".config";
@@ -18,7 +22,7 @@ pub fn init() {
 
 pub fn get_env(key: &str) -> Option<String> {
     std::env::var(key)
-        .map_err(|err| {error!("{}",err);})
+        .map_err(|err| error!("{}",err))
         .ok()
 }
 
