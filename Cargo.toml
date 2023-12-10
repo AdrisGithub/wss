@@ -3,13 +3,13 @@ name = "wss"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-path = "src/main/main.rs"
-name = "wss"
+[lib]
+path= "src/main/lib.rs"
 
 [dependencies]
-aul = "1.2.0"
-whdp = "1.1.5"
+aul = "1.2.1"
+whdp = "1.1.7"
+wjp = "1.0.1"
 
 [features]
 no-color = ["aul/no-color"]

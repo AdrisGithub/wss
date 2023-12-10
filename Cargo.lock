@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "aul"
-version = "1.2.0"
+version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0676d90206affd10788537e7653b0cd9f294fc6978e3de63166283de342c1f19"
+checksum = "0891607eae2c8c117017b78073a98e45ee296cd15373b1d9b754b920d7a8d819"
 dependencies = [
  "colored",
 ]
@@ -88,9 +88,12 @@ dependencies = [
 
 [[package]]
 name = "whdp"
-version = "1.1.5"
+version = "1.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7568bae36b381476ad28d1483068e421fee88f579fcfcbc804d5cf24eac702d4"
+checksum = "4606fa7680b399396a52fe29364973bdf68fffc25e46080dbb7fe86c9805f924"
+dependencies = [
+ "wjp",
+]
 
 [[package]]
 name = "windows-sys"
@@ -159,9 +162,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed94fce61571a4006852b7389a063ab983c02eb1bb37b47f8272ce92d06d9538"
 
 [[package]]
+name = "wjp"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a8af6fd4672735d2d237050bc4cfa871d7e2f9b9891e84b1228a2d6a1008dca9"
+
+[[package]]
 name = "wss"
 version = "0.1.0"
 dependencies = [
  "aul",
  "whdp",
+ "wjp",
 ]
