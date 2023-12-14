@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::{Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, ok};
+use whdp::{Request, TryRequest};
 
 use crate::middleware::Middleware;
 
@@ -57,14 +57,14 @@ impl Iterator for Server {
         if let Some(res) = opt {
             if let Ok(mut stream) = res {
                 let res_req = stream.try_to_request();
-                if let Ok(req) = res_req  {
+                if let Ok(req) = res_req {
                     return Some((req, stream));
                 } else {
                     let _ = stream.write_all(internal_error().as_bytes());
-                    error!("Error parsing Request: {}",res_req.err().unwrap())
+                    error!("Error parsing Request: {}", res_req.err().unwrap())
                 }
             } else {
-                error!("Error establishing Connection: {}",res.err().unwrap())
+                error!("Error establishing Connection: {}", res.err().unwrap())
             }
         }
         self.next()
@@ -74,4 +74,3 @@ impl Iterator for Server {
 fn internal_error() -> String {
     internal_server_error("Internal Server Error".into()).to_string()
 }
-
