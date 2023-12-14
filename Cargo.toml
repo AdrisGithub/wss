@@ -2,6 +2,14 @@
 name = "wbsl"
 version = "0.0.0"
 edition = "2021"
+authors = ["Adriiii"]
+description = "Wizards Basic Server Library"
+readme = "README.md"
+repository = "https://github.com/AdrisGithub/wbsl"
+license = "GPL-2.0-or-later"
+documentation = "https://docs.rs/wbsl"
+exclude = ["src/resources/", ".github/", "sonar-project.properties"]
+
 
 [lib]
 path= "src/main/lib.rs"
