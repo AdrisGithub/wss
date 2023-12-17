@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::{Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, not_found};
+use whdp::{Request, TryRequest};
 
 use crate::middleware::Middleware;
 use crate::router::Router;
@@ -29,7 +29,7 @@ impl Server {
             // do the routing shit
             let func = self.router.get_func(req.get_uri(), req.get_method());
 
-            let resp;
+            let mut resp;
             if let Some(func) = func {
                 resp = func(req)
             } else {
@@ -55,7 +55,7 @@ impl TryFrom<SocketAddr> for Server {
         Ok(Self {
             listener: TcpListener::bind(value)?,
             middlewares: Vec::new(),
-            router: Router::new()
+            router: Router::new(),
         })
     }
 }
