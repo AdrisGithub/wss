@@ -110,6 +110,10 @@ impl Server {
         }
     }
 
+    pub fn builder() -> ServerBuilder {
+        ServerBuilder::default()
+    }
+
     pub fn incoming(&self) -> Incoming<'_> {
         self.listener.incoming()
     }
