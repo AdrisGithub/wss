@@ -23,7 +23,7 @@ impl Router {
         }
     }
 
-    pub fn insert<I: Deserialize, O: Serialize>(&mut self, key: String, val: Methods<I, O>) {
+    pub fn insert<I: Deserialize, O: Serialize>(&mut self, key: String, val: Methods) {
         if let Some(tree) = self.map.get_mut(&key) {
             tree.insert(val.get_type(), val.get_inner());
         } else {
