@@ -38,11 +38,14 @@ impl ServerBuilder {
     pub fn with_logging(self, level: Level) -> Self {
         self.add_middle(Box::new(Logger::from(level)))
     }
-    pub fn with_auto_headers(self, app_name: String, content_type: String) -> Self {
-        self.add_middle(Box::new(AdditionalHeaders::from((app_name, content_type))))
+    pub fn with_auto_headers(self, app_name: &str, content_type: &str) -> Self {
+        self.add_middle(Box::new(AdditionalHeaders::from((
+            String::from(app_name),
+            String::from(content_type),
+        ))))
     }
-    pub fn route(mut self, route: String, methods: Methods) -> Self {
-        self.router.insert(route, methods);
+    pub fn route(mut self, route: &str, methods: Methods) -> Self {
+        self.router.insert(String::from(route), methods);
         self
     }
     pub fn bind(mut self, addr: SocketAddr) -> Self {
