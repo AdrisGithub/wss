@@ -1,12 +1,11 @@
-use std::io::{BufRead, BufReader, Write};
+use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 
 use aul::error;
 use aul::level::Level;
 use aul::log;
 
-use crate::error::WBSLError;
-use crate::helper::RawFunction;
+use crate::helper::{parse_stream, RawFunction};
 
 pub struct RawServlet {
     listener: TcpListener,
@@ -14,12 +13,6 @@ pub struct RawServlet {
 }
 
 impl RawServlet {
-    fn parse_stream(stream: &TcpStream) -> Result<String, WBSLError> {
-        let mut reader = BufReader::new(stream);
-        let received: Vec<u8> = reader.fill_buf().map_err(|_err| WBSLError)?.to_vec();
-        reader.consume(received.len());
-        String::from_utf8(received).map_err(|_e| WBSLError)
-    }
     pub fn start(&self) {
         for (string, mut stream) in self {
             let result = (self.func)(string);
@@ -34,7 +27,7 @@ impl Iterator for &RawServlet {
         let next = self.listener.incoming().next();
         if let Some(res) = next {
             if let Ok(stream) = res {
-                return match RawServlet::parse_stream(&stream) {
+                return match parse_stream(&stream) {
                     Ok(string) => Some((string, stream)),
                     Err(err) => {
                         error!("Error parsing the Stream: {}", err);
