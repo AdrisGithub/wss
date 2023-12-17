@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::resp_presets::{internal_server_error, not_found};
 use whdp::{Request, TryRequest};
+use whdp::resp_presets::{internal_server_error, not_found};
 
 use crate::middleware::Middleware;
 use crate::router::Router;
@@ -19,9 +19,7 @@ pub struct Server {
 
 impl Server {
     pub fn start(&self) {
-        for stream in self.incoming() {
-            let mut stream = stream.unwrap();
-            let mut req = stream.try_to_request().unwrap();
+        for (mut req, mut stream) in self {
             for middle in self.middlewares.iter() {
                 req = middle.on_request(req);
             }
@@ -60,7 +58,7 @@ impl TryFrom<SocketAddr> for Server {
     }
 }
 
-impl Iterator for Server {
+impl Iterator for &Server {
     type Item = (Request, TcpStream);
     fn next(&mut self) -> Option<Self::Item> {
         let opt = self.incoming().next();
