@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::hash::Hash;
 
 use whdp::HttpMethod;
 
@@ -10,14 +9,26 @@ pub struct Router {
 }
 
 // TODO path param router
-struct ParamRouter {
+pub struct ParamRouter {
     router: Router,
+}
+
+impl Default for Router {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for ParamRouter {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ParamRouter {
     pub fn new() -> Self {
         Self {
-            router: Router::new()
+            router: Router::new(),
         }
     }
     pub fn insert(&mut self, key: String, val: Methods) {
@@ -25,11 +36,10 @@ impl ParamRouter {
     }
 }
 
-
 impl Router {
     pub fn new() -> Self {
         Self {
-            map: HashMap::new()
+            map: HashMap::new(),
         }
     }
 
@@ -57,12 +67,12 @@ pub enum Methods {
 impl Methods {
     pub fn get_inner(self) -> HTTPFunction {
         match self {
-            Methods::GET(s) => s
+            Methods::GET(s) => s,
         }
     }
     pub fn get_type(&self) -> HttpMethod {
         match self {
-            Methods::GET(_) => HttpMethod::Get
+            Methods::GET(_) => HttpMethod::Get,
         }
     }
 }
