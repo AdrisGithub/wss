@@ -1,20 +1,35 @@
-use std::collections::BTreeMap;
+use std::collections::HashMap;
+use std::hash::Hash;
 
 use whdp::HttpMethod;
 
 use crate::helper::HTTPFunction;
 
 pub struct Router {
-    map: BTreeMap<String, BTreeMap<HttpMethod, HTTPFunction>>
-}
-pub struct ParamRouter{
-    router: Router
+    map: HashMap<String, HashMap<HttpMethod, HTTPFunction>>,
 }
 
-impl Router {
-    pub const fn new() -> Self {
+pub struct ParamRouter {
+    router: Router,
+}
+
+impl ParamRouter {
+    pub fn new() -> Self {
         Self {
-            map: BTreeMap::new()
+            router: Router::new()
+        }
+    }
+    pub fn insert(&mut self, key: String, val: Methods) {
+        self.router.insert(key, val)
+    }
+    pub fn get(&mut self, key: &String) -> ()
+}
+
+
+impl Router {
+    pub fn new() -> Self {
+        Self {
+            map: HashMap::new()
         }
     }
 
@@ -22,12 +37,12 @@ impl Router {
         if let Some(tree) = self.map.get_mut(&key) {
             tree.insert(val.get_type(), val.get_inner());
         } else {
-            let mut init = BTreeMap::new();
+            let mut init = HashMap::new();
             init.insert(val.get_type(), val.get_inner());
             self.map.insert(key, init);
         }
     }
-    pub fn get(&self, key: &String) -> Option<&BTreeMap<HttpMethod, HTTPFunction>> {
+    pub fn get(&self, key: &String) -> Option<&HashMap<HttpMethod, HTTPFunction>> {
         self.map.get(key)
     }
     pub fn get_func(&self, key: &String, method: &HttpMethod) -> Option<&HTTPFunction> {
