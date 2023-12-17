@@ -32,11 +32,11 @@ impl From<Level> for Logger {
 
 unsafe impl Middleware for Logger {
     fn on_request(&self, req: Request) -> Request {
-        log!(self.0, "Received Request, {}", Sens(&req));
+        log!(self.0, "Request: \n{}", Sens(&req));
         req
     }
     fn on_response(&self, resp: Response) -> Response {
-        log!(self.0, "Received Request, {}", Sens(&resp));
+        log!(self.0, "Response: \n{}", Sens(&resp));
         resp
     }
 }
