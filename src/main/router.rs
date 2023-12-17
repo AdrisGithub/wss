@@ -22,7 +22,9 @@ impl ParamRouter {
     pub fn insert(&mut self, key: String, val: Methods) {
         self.router.insert(key, val)
     }
-    pub fn get(&mut self, key: &String) -> ()
+    pub fn get(&mut self, key: &String) -> () {
+
+    }
 }
 
 
