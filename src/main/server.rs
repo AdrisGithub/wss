@@ -1,6 +1,6 @@
 use std::io;
 use std::io::Write;
-use std::net::{Incoming, SocketAddr, TcpListener, TcpStream};
+use std::net::{Incoming, SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 
 use aul::error;
 use aul::level::Level;
@@ -8,7 +8,9 @@ use aul::log;
 use whdp::{Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, not_found};
 
+use crate::error::WBSLError;
 use crate::helper::{AdditionalHeaders, Logger};
+use crate::methods::Methods;
 use crate::middleware::Middleware;
 use crate::router::Router;
 
@@ -28,16 +30,41 @@ impl ServerBuilder {
     pub fn new() -> Self {
         ServerBuilder::default()
     }
-    pub fn add_middle(&mut self, middle: Box<dyn Middleware>) -> &mut Self {
+    pub fn add_middle(mut self, middle: Box<dyn Middleware>) -> Self {
         self.middlewares.push(middle);
         self
     }
 
-    pub fn with_logging(&mut self, level: Level) -> &mut Self {
+    pub fn with_logging(self, level: Level) -> Self {
         self.add_middle(Box::new(Logger::from(level)))
     }
-    pub fn with_auto_headers(&mut self, app_name: String, content_type: String) -> &mut Self {
+    pub fn with_auto_headers(self, app_name: String, content_type: String) -> Self {
         self.add_middle(Box::new(AdditionalHeaders::from((app_name, content_type))))
+    }
+    pub fn route(mut self, route: String, methods: Methods) -> Self {
+        self.router.insert(route, methods);
+        self
+    }
+    pub fn bind(mut self, addr: SocketAddr) -> Self {
+        self.socket = Some(addr);
+        self
+    }
+    pub fn listen<A: ToSocketAddrs>(self, addr: A) -> Result<Server, WBSLError> {
+        self.bind(addr.to_socket_addrs().map_err(|err| WBSLError)?.next().ok_or(WBSLError)?).build()
+    }
+    pub fn build(self) -> Result<Server, WBSLError> {
+        if self.validate() {
+            Ok(Server {
+                router: self.router,
+                middlewares: self.middlewares,
+                listener: TcpListener::bind(self.socket.unwrap()).map_err(|_err| WBSLError)?,
+            })
+        } else {
+            Err(WBSLError)
+        }
+    }
+    fn validate(&self) -> bool {
+        self.socket.is_some()
     }
 }
 
