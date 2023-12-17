@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::resp_presets::{internal_server_error, not_found};
-use whdp::{Request, TryRequest};
+use whdp::{HttpMethod, Request, TryRequest};
+use whdp::resp_presets::{internal_server_error, no_content, not_found};
 
 use crate::error::WBSLError;
 use crate::helper::{AdditionalHeaders, Logger};
@@ -59,7 +59,7 @@ impl ServerBuilder {
                 .next()
                 .ok_or(WBSLError)?,
         )
-        .build()
+            .build()
     }
     pub fn build(self) -> Result<Server, WBSLError> {
         if self.validate() {
@@ -97,12 +97,30 @@ impl Server {
             // do the routing shit
             let func = self.router.get_func(req.get_uri(), req.get_method());
 
-            let mut resp;
+            let mut resp = not_found(String::new());
 
             if let Some(func) = func {
                 resp = func(req)
-            } else {
-                resp = not_found(String::new())
+            } else if req.get_method().eq(&HttpMethod::Head) {
+                if let Some(func) = self.router.get_func(req.get_uri(), &HttpMethod::Get) {
+                    resp = func(req);
+                    resp.set_body(String::new());
+                }
+            } else if req.get_method().eq(&HttpMethod::Options) {
+                if let Some(func) = self.router.get(req.get_uri()) {
+                    resp = no_content(String::new());
+                    let mut options = String::new();
+                    let mut first = true;
+                    for key in func.keys() {
+                        if first {
+                            first = false;
+                        } else {
+                            options.push_str(", ");
+                        }
+                        options.push_str(key.to_string().as_str());
+                    }
+                    resp.add_header((String::from("Allow"), options));
+                }
             }
 
             for middle in self.middlewares.iter() {
