@@ -10,6 +10,6 @@ impl Debug for WBSLError {
 
 impl Display for WBSLError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        Debug::fmt(self,f)
+        Debug::fmt(self, f)
     }
 }
