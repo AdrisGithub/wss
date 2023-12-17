@@ -32,15 +32,14 @@ impl From<Level> for Logger {
 
 unsafe impl Middleware for Logger {
     fn on_request(&self, req: Request) -> Request {
-        log!(self.0,"Received Request, {}",Sens(&req));
+        log!(self.0, "Received Request, {}", Sens(&req));
         req
     }
     fn on_response(&self, resp: Response) -> Response {
-        log!(self.0,"Received Request, {}", Sens(&resp));
+        log!(self.0, "Received Request, {}", Sens(&resp));
         resp
     }
 }
-
 
 pub(crate) struct AdditionalHeaders(String, String);
 
@@ -72,4 +71,3 @@ pub(crate) fn get_current_time() -> String {
     let _ = write!(out, "{:?}", since_the_epoch);
     out
 }
-

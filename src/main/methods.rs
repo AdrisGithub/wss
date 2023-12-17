@@ -25,7 +25,7 @@ impl Methods {
             Methods::Patch(s) => s,
             Methods::Trace(s) => s,
             Methods::Options(s) => s,
-            Methods::Put(s) => s
+            Methods::Put(s) => s,
         }
     }
     pub fn get_type(&self) -> HttpMethod {
@@ -38,7 +38,7 @@ impl Methods {
             Methods::Patch(_) => HttpMethod::Patch,
             Methods::Trace(_) => HttpMethod::Trace,
             Methods::Options(_) => HttpMethod::Options,
-            Methods::Put(_) => HttpMethod::Put
+            Methods::Put(_) => HttpMethod::Put,
         }
     }
 }

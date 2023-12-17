@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use whdp::HttpMethod;
-use wjp::{Deserialize, Serialize};
 
 use crate::helper::HTTPFunction;
 use crate::methods::Methods;
@@ -23,7 +22,7 @@ impl Router {
         }
     }
 
-    pub fn insert<I: Deserialize, O: Serialize>(&mut self, key: String, val: Methods) {
+    pub fn insert(&mut self, key: String, val: Methods) {
         if let Some(tree) = self.map.get_mut(&key) {
             tree.insert(val.get_type(), val.get_inner());
         } else {
