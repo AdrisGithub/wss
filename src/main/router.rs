@@ -1,38 +1,18 @@
 use std::collections::HashMap;
 
 use whdp::HttpMethod;
+use wjp::{Deserialize, Serialize};
 
 use crate::helper::HTTPFunction;
+use crate::methods::Methods;
 
 pub struct Router {
     map: HashMap<String, HashMap<HttpMethod, HTTPFunction>>,
 }
 
-// TODO path param router
-pub struct ParamRouter {
-    router: Router,
-}
-
 impl Default for Router {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-impl Default for ParamRouter {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl ParamRouter {
-    pub fn new() -> Self {
-        Self {
-            router: Router::new(),
-        }
-    }
-    pub fn insert(&mut self, key: String, val: Methods) {
-        self.router.insert(key, val)
     }
 }
 
@@ -43,7 +23,7 @@ impl Router {
         }
     }
 
-    pub fn insert(&mut self, key: String, val: Methods) {
+    pub fn insert<I: Deserialize, O: Serialize>(&mut self, key: String, val: Methods<I, O>) {
         if let Some(tree) = self.map.get_mut(&key) {
             tree.insert(val.get_type(), val.get_inner());
         } else {
@@ -57,22 +37,5 @@ impl Router {
     }
     pub fn get_func(&self, key: &String, method: &HttpMethod) -> Option<&HTTPFunction> {
         self.get(key).and_then(|e| e.get(method))
-    }
-}
-
-pub enum Methods {
-    GET(HTTPFunction),
-}
-
-impl Methods {
-    pub fn get_inner(self) -> HTTPFunction {
-        match self {
-            Methods::GET(s) => s,
-        }
-    }
-    pub fn get_type(&self) -> HttpMethod {
-        match self {
-            Methods::GET(_) => HttpMethod::Get,
-        }
     }
 }
