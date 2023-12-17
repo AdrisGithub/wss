@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::{Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, not_found};
+use whdp::{Request, TryRequest};
 
 use crate::error::WBSLError;
 use crate::helper::{AdditionalHeaders, Logger};
@@ -50,7 +50,13 @@ impl ServerBuilder {
         self
     }
     pub fn listen<A: ToSocketAddrs>(self, addr: A) -> Result<Server, WBSLError> {
-        self.bind(addr.to_socket_addrs().map_err(|err| WBSLError)?.next().ok_or(WBSLError)?).build()
+        self.bind(
+            addr.to_socket_addrs()
+                .map_err(|_err| WBSLError)?
+                .next()
+                .ok_or(WBSLError)?,
+        )
+        .build()
     }
     pub fn build(self) -> Result<Server, WBSLError> {
         if self.validate() {
