@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::Write;
 use std::io::{BufRead, BufReader};
 use std::net::TcpStream;
@@ -70,4 +71,23 @@ pub(crate) fn get_current_time() -> String {
     let mut out = String::new();
     let _ = write!(out, "{:?}", since_the_epoch);
     out
+}
+pub fn query(str: &str) -> HashMap<&str,&str>{
+    let split = str.split('?');
+    let wtf = split.last().map(|func| func.split('&'));
+    if let Some(w) = wtf {
+        let mut map = HashMap::new();
+        for e in w {
+            let mut e = e.split('=');
+            let key = e.next();
+            let val = e.next();
+            if let Some(key) = key {
+                if let Some(val) = val {
+                    map.insert(key, val);
+                }
+            }
+        }
+        return map;
+    }
+    HashMap::new()
 }
