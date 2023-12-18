@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::resp_presets::{internal_server_error, no_content, not_found};
 use whdp::{HttpMethod, Request, TryRequest};
+use whdp::resp_presets::{internal_server_error, no_content, not_found};
 
 use crate::error::WBSLError;
 use crate::helper::{AdditionalHeaders, Logger};
@@ -24,6 +24,7 @@ pub struct ServerBuilder {
     socket: Option<SocketAddr>,
     middlewares: Vec<Box<dyn Middleware>>,
     router: Router,
+    pre: String,
 }
 
 impl ServerBuilder {
@@ -45,7 +46,15 @@ impl ServerBuilder {
         ))))
     }
     pub fn route(mut self, route: &str, methods: Methods) -> Self {
-        self.router.insert(String::from(route), methods);
+        let mut temp = self.pre.to_string();
+        temp.push_str(route);
+        self.router.insert(temp, methods);
+        self
+    }
+    pub fn group(mut self, pre: &str, func: fn(Self) -> Self) -> Self {
+        self.pre.push_str(pre);
+        self = func(self);
+        self.pre.clear();
         self
     }
     pub fn bind(mut self, addr: SocketAddr) -> Self {
@@ -59,7 +68,7 @@ impl ServerBuilder {
                 .next()
                 .ok_or(WBSLError)?,
         )
-        .build()
+            .build()
     }
     pub fn build(self) -> Result<Server, WBSLError> {
         if self.validate() {
@@ -83,6 +92,7 @@ impl Default for ServerBuilder {
             socket: None,
             middlewares: Vec::new(),
             router: Router::new(),
+            pre: String::new(),
         }
     }
 }
