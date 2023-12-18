@@ -72,7 +72,7 @@ pub(crate) fn get_current_time() -> String {
     let _ = write!(out, "{:?}", since_the_epoch);
     out
 }
-pub fn query(str: &str) -> HashMap<&str,&str>{
+pub fn query(str: &str) -> HashMap<&str, &str> {
     let split = str.split('?');
     let wtf = split.last().map(|func| func.split('&'));
     if let Some(w) = wtf {
