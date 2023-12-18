@@ -5,8 +5,8 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::{HttpMethod, Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, no_content, not_found};
+use whdp::{HttpMethod, Request, TryRequest};
 
 use crate::error::WBSLError;
 use crate::helper::{AdditionalHeaders, Logger};
@@ -59,7 +59,7 @@ impl ServerBuilder {
                 .next()
                 .ok_or(WBSLError)?,
         )
-            .build()
+        .build()
     }
     pub fn build(self) -> Result<Server, WBSLError> {
         if self.validate() {
@@ -95,7 +95,8 @@ impl Server {
             }
 
             // do the routing shit
-            let func = self.router.get_func(req.get_uri(), req.get_method());
+            let path = req.get_uri().split('?').last().unwrap();
+            let func = self.router.get_func(&String::from(path), req.get_method());
 
             let mut resp = not_found(String::new());
 
