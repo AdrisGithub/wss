@@ -82,17 +82,18 @@ impl<I: Deserialize, O: Serialize> Iterator for &SerializeServlet<I, O> {
         let next = self.listener.incoming().next();
         if let Some(res) = next {
             if let Ok(stream) = res {
-                match parse_stream(&stream) {
-                    Ok(string) => match I::deserialize(string) {
-                        Ok(obk) => Some(obk),
-                        Err(err) => {
-                            error!("Error parsing the Payload: {:?}", err);
-                            None
+                return match parse_stream(&stream) {
+                    Ok(string) =>
+                        match I::deserialize(string) {
+                            Ok(obj) => Some((obj, stream)),
+                            Err(err) => {
+                                error!("Error parsing the Payload: {:?}", err);
+                                self.next()
+                            }
                         }
-                    },
                     Err(err) => {
                         error!("Error parsing the Stream: {}", err);
-                        None
+                        self.next()
                     }
                 };
             } else {

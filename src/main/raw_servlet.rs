@@ -77,7 +77,7 @@ impl Iterator for &RawServlet {
                     Ok(string) => Some((string, stream)),
                     Err(err) => {
                         error!("Error parsing the Stream: {}", err);
-                        None
+                        self.next()
                     }
                 };
             } else {
