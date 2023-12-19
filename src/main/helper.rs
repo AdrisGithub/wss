@@ -1,6 +1,7 @@
 use std::collections::HashMap;
-use std::fmt::Write;
-use std::io::{BufRead, BufReader};
+use std::fmt::{Debug, Write};
+use std::fs::File;
+use std::io::{BufRead, BufReader, Read};
 use std::net::TcpStream;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -8,6 +9,8 @@ use aul::level::Level;
 use aul::log;
 use aul::sensitive::Sens;
 use whdp::{Request, Response};
+use whdp::resp_presets::ok;
+use wjp::{map, Serialize, Values};
 
 use crate::error::WBSLError;
 use crate::middleware::Middleware;
@@ -42,6 +45,71 @@ unsafe impl Middleware for Logger {
     }
 }
 
+pub(crate) fn health(_: Request) -> Response {
+    ok(Health::default().json())
+}
+
+pub struct Health {
+    active: bool,
+    time: String,
+    ram: Option<Ram>,
+}
+
+impl Serialize for Health {
+    fn serialize(&self) -> Values {
+        Values::Struct(map!(
+            ("active",self.active.serialize()),
+            ("time",self.time.serialize()),
+            ("ram",self.ram.serialize())
+        ))
+    }
+}
+
+pub struct Ram {
+    total: u64,
+    free: u64,
+}
+
+impl Serialize for Ram {
+    fn serialize(&self) -> Values {
+        let total = (self.total as f64 / 1_000_000_f64).to_string() + " GB";
+        let free = (self.free as f64 / 1_000_000_f64).to_string() + " GB";
+        Values::Struct(map!(("total",total.serialize()),("free",free.serialize())))
+    }
+}
+
+impl Default for Health {
+    fn default() -> Self {
+        Self {
+            active: true,
+            time: get_current_time(),
+            ram: get_mem(),
+        }
+    }
+}
+
+fn get_mem() -> Option<Ram> {
+    let mut s = String::new();
+    File::open("/proc/meminfo").ok()?.read_to_string(&mut s).ok()?;
+    let mut meminfo_hashmap = HashMap::new();
+    for line in s.lines() {
+        let mut split_line = line.split_whitespace();
+        let label = split_line.next();
+        let value = split_line.next();
+        if value.is_some() && label.is_some() {
+            let label = label.unwrap().split(':').next()?;
+            let value = value.unwrap().parse::<u64>().ok()?;
+            meminfo_hashmap.insert(label, value);
+        }
+    }
+    let total = meminfo_hashmap.remove("MemTotal")?;
+    let free = meminfo_hashmap.remove("MemFree")?;
+    Some(Ram {
+        free,
+        total,
+    })
+}
+
 pub(crate) struct AdditionalHeaders(String, String);
 
 impl From<(String, String)> for AdditionalHeaders {
@@ -72,6 +140,7 @@ pub(crate) fn get_current_time() -> String {
     let _ = write!(out, "{:?}", since_the_epoch);
     out
 }
+
 pub fn query(str: &str) -> HashMap<&str, &str> {
     let split = str.split('?');
     let wtf = split.last().map(|func| func.split('&'));

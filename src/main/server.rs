@@ -9,8 +9,9 @@ use whdp::{HttpMethod, Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, no_content, not_found};
 
 use crate::error::WBSLError;
-use crate::helper::{AdditionalHeaders, Logger};
+use crate::helper::{AdditionalHeaders, health, Logger};
 use crate::methods::Methods;
+use crate::methods::Methods::Get;
 use crate::middleware::Middleware;
 use crate::router::Router;
 
@@ -39,6 +40,11 @@ impl ServerBuilder {
     pub fn with_logging(self, level: Level) -> Self {
         self.add_middle(Box::new(Logger::from(level)))
     }
+    
+    pub fn health(self) -> Self{
+        self.route("/health",Get(health))
+    }
+    
     pub fn with_auto_headers(self, app_name: &str, content_type: &str) -> Self {
         self.add_middle(Box::new(AdditionalHeaders::from((
             String::from(app_name),
