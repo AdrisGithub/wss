@@ -14,7 +14,8 @@ impl Properties {
         let mut map = HashMap::new();
         let res = read_to_string("application.properties");
         if let Ok(string) = res {
-            let prop = string.lines()
+            let prop = string
+                .lines()
                 .map(|line| line.split('='))
                 .map(|mut e| (e.next(), e.remainder()));
 
@@ -28,13 +29,13 @@ impl Properties {
         } else {
             warn!("No application.properties provided");
         }
-        Self {
-            props: map
-        }
+        Self { props: map }
     }
 
     fn get_attr(&self, key: &str) -> Option<String> {
-        self.props.get(&String::from(key)).map(|str| str.to_string())
+        self.props
+            .get(&String::from(key))
+            .map(|str| str.to_string())
     }
 }
 
@@ -47,7 +48,7 @@ impl PropWrapper {
                 self.0 = Some(Properties::new());
                 self.get_attr(key)
             }
-            Some(s) => s.get_attr(key)
+            Some(s) => s.get_attr(key),
         }
     }
 
@@ -60,7 +61,9 @@ pub static mut PROPS: PropWrapper = PropWrapper::new();
 #[macro_export]
 macro_rules! prop {
     ($key:expr) => {
-        unsafe{wbsl::PROPS.get_attr($key)}
+        unsafe { wbsl::PROPS.get_attr($key) }
     };
-    () => {None}
+    () => {
+        None
+    };
 }
