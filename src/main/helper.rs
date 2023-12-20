@@ -123,9 +123,9 @@ unsafe impl Middleware for AdditionalHeaders {
         req
     }
     fn on_response(&self, mut resp: Response) -> Response {
-        resp.add_header((String::from("Server"), self.0.clone()));
-        resp.add_header((String::from("Content-Type"), self.1.clone()));
-        resp.add_header((String::from("Date"), get_current_time()));
+        resp.try_insert((String::from("Server"), self.0.clone()));
+        resp.try_insert((String::from("Content-Type"), self.1.clone()));
+        resp.try_insert((String::from("Date"), get_current_time()));
 
         resp
     }
