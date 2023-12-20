@@ -32,7 +32,7 @@ impl Properties {
     }
 }
 
-struct PropWrapper(Option<Properties>);
+pub struct PropWrapper(Option<Properties>);
 
 impl PropWrapper {
     pub fn get_attr(&mut self, key: &str) -> Option<String> {
@@ -50,7 +50,7 @@ impl PropWrapper {
     }
 }
 
-static PROPS: PropWrapper = PropWrapper::new();
+pub static PROPS: PropWrapper = PropWrapper::new();
 #[macro_export]
 macro_rules! prop {
     ($key:expr) => {
