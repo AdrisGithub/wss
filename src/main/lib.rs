@@ -1,5 +1,3 @@
-#![feature(str_split_remainder)]
-
 pub mod error;
 pub mod helper;
 pub mod methods;

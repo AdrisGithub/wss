@@ -3,6 +3,7 @@ use std::fmt::Write;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::net::TcpStream;
+use std::str::Split;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use aul::level::Level;
@@ -162,4 +163,14 @@ pub fn query(str: &str) -> HashMap<&str, &str> {
         return map;
     }
     HashMap::new()
+}
+
+pub(crate) fn remainder(mut split: Split<char>) -> Option<String> {
+    let mut res = String::new();
+    let mut next = split.next();
+    while next.is_some() {
+        res += next.unwrap();
+        next = split.next()
+    }
+    Some(res)
 }

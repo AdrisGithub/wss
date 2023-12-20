@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use std::fs::read_to_string;
-
+use crate::helper::remainder;
 use aul::level::Level;
 use aul::log;
 use aul::warn;
+use std::collections::HashMap;
+use std::fs::read_to_string;
 
 struct Properties {
     props: HashMap<String, String>,
@@ -17,12 +17,12 @@ impl Properties {
             let prop = string
                 .lines()
                 .map(|line| line.split('='))
-                .map(|mut e| (e.next(), e.remainder()));
+                .map(|mut e| (e.next(), remainder(e)));
 
             prop.for_each(|e| {
                 if let Some(key) = e.0 {
                     if let Some(value) = e.1 {
-                        map.insert(key.to_string(), value.to_string());
+                        map.insert(key.to_string(), value);
                     }
                 }
             })
