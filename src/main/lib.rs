@@ -9,4 +9,6 @@ pub mod router;
 pub mod ser_servlet;
 pub mod server;
 pub mod servlet;
-pub mod properties;
+mod properties;
+
+pub use properties::PROPS;
