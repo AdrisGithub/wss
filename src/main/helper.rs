@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fmt::{Debug, Write};
+use std::fmt::Write;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::net::TcpStream;
@@ -8,8 +8,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use aul::level::Level;
 use aul::log;
 use aul::sensitive::Sens;
-use whdp::resp_presets::ok;
 use whdp::{Request, Response};
+use whdp::resp_presets::ok;
 use wjp::{map, Serialize, Values};
 
 use crate::error::WBSLError;
