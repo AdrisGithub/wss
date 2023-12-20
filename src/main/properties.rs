@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 use std::fs::read_to_string;
 
+use aul::level::Level;
+use aul::log;
+use aul::warn;
+
 struct Properties {
     props: HashMap<String, String>,
 }
@@ -21,6 +25,8 @@ impl Properties {
                     }
                 }
             })
+        } else {
+            warn!("No application.properties provided");
         }
         Self {
             props: map
@@ -50,11 +56,11 @@ impl PropWrapper {
     }
 }
 
-pub static PROPS: PropWrapper = PropWrapper::new();
+pub static mut PROPS: PropWrapper = PropWrapper::new();
 #[macro_export]
 macro_rules! prop {
     ($key:expr) => {
-        PROPS.get_attr($key)
+        unsafe{wbsl::PROPS.get_attr($key)}
     };
     () => {None}
 }
