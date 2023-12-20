@@ -5,11 +5,11 @@ use std::net::{Incoming, SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 use aul::error;
 use aul::level::Level;
 use aul::log;
-use whdp::{HttpMethod, Request, TryRequest};
 use whdp::resp_presets::{internal_server_error, no_content, not_found};
+use whdp::{HttpMethod, Request, TryRequest};
 
 use crate::error::WBSLError;
-use crate::helper::{AdditionalHeaders, health, Logger};
+use crate::helper::{health, AdditionalHeaders, Logger};
 use crate::methods::Methods;
 use crate::methods::Methods::Get;
 use crate::middleware::Middleware;
@@ -40,11 +40,11 @@ impl ServerBuilder {
     pub fn with_logging(self, level: Level) -> Self {
         self.add_middle(Box::new(Logger::from(level)))
     }
-    
-    pub fn health(self) -> Self{
-        self.route("/health",Get(health))
+
+    pub fn health(self) -> Self {
+        self.route("/health", Get(health))
     }
-    
+
     pub fn with_auto_headers(self, app_name: &str, content_type: &str) -> Self {
         self.add_middle(Box::new(AdditionalHeaders::from((
             String::from(app_name),
@@ -74,7 +74,7 @@ impl ServerBuilder {
                 .next()
                 .ok_or(WBSLError)?,
         )
-            .build()
+        .build()
     }
     pub fn build(self) -> Result<Server, WBSLError> {
         if self.validate() {

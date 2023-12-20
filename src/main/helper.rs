@@ -8,8 +8,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use aul::level::Level;
 use aul::log;
 use aul::sensitive::Sens;
-use whdp::{Request, Response};
 use whdp::resp_presets::ok;
+use whdp::{Request, Response};
 use wjp::{map, Serialize, Values};
 
 use crate::error::WBSLError;
@@ -58,9 +58,9 @@ pub struct Health {
 impl Serialize for Health {
     fn serialize(&self) -> Values {
         Values::Struct(map!(
-            ("active",self.active.serialize()),
-            ("time",self.time.serialize()),
-            ("ram",self.ram.serialize())
+            ("active", self.active.serialize()),
+            ("time", self.time.serialize()),
+            ("ram", self.ram.serialize())
         ))
     }
 }
@@ -74,7 +74,10 @@ impl Serialize for Ram {
     fn serialize(&self) -> Values {
         let total = (self.total as f64 / 1_000_000_f64).to_string() + " GB";
         let free = (self.free as f64 / 1_000_000_f64).to_string() + " GB";
-        Values::Struct(map!(("total",total.serialize()),("free",free.serialize())))
+        Values::Struct(map!(
+            ("total", total.serialize()),
+            ("free", free.serialize())
+        ))
     }
 }
 
@@ -90,7 +93,10 @@ impl Default for Health {
 
 fn get_mem() -> Option<Ram> {
     let mut s = String::new();
-    File::open("/proc/meminfo").ok()?.read_to_string(&mut s).ok()?;
+    File::open("/proc/meminfo")
+        .ok()?
+        .read_to_string(&mut s)
+        .ok()?;
     let mut meminfo_hashmap = HashMap::new();
     for line in s.lines() {
         let mut split_line = line.split_whitespace();
@@ -104,10 +110,7 @@ fn get_mem() -> Option<Ram> {
     }
     let total = meminfo_hashmap.remove("MemTotal")?;
     let free = meminfo_hashmap.remove("MemFree")?;
-    Some(Ram {
-        free,
-        total,
-    })
+    Some(Ram { free, total })
 }
 
 pub(crate) struct AdditionalHeaders(String, String);
