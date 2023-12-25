@@ -1,16 +1,15 @@
 use std::collections::HashMap;
-use std::fmt::Write;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Read};
 use std::net::TcpStream;
 use std::str::Split;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use aul::level::Level;
 use aul::log;
 use aul::sensitive::Sens;
-use whdp::resp_presets::ok;
+use wbdl::Date;
 use whdp::{Request, Response};
+use whdp::resp_presets::ok;
 use wjp::{map, Serialize, Values};
 
 use crate::error::WBSLError;
@@ -136,13 +135,7 @@ unsafe impl Middleware for AdditionalHeaders {
 }
 
 pub(crate) fn get_current_time() -> String {
-    let start = SystemTime::now();
-    let since_the_epoch = start
-        .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
-    let mut out = String::new();
-    let _ = write!(out, "{:?}", since_the_epoch);
-    out
+    Date::now().map(|s| s.to_string()).expect("Time went backwards")
 }
 
 pub fn query(str: &str) -> HashMap<&str, &str> {
