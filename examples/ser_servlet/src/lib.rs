@@ -8,13 +8,13 @@ pub struct GET(pub String, pub usize);
 
 impl Serialize for POST {
     fn serialize(&self) -> Values {
-        Values::Struct(map!(("message",self.0.serialize())))
+        Values::Struct(map!(("message",&self.0)))
     }
 }
 
 impl Serialize for GET {
     fn serialize(&self) -> Values {
-        Values::Struct(map!(("message",self.0.serialize()),("id",self.1.serialize())))
+        Values::Struct(map!(("message",&self.0),("id",&self.1)))
     }
 }
 

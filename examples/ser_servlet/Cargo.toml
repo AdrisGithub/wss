@@ -12,7 +12,7 @@ name = "main"
 path = "src/client.rs"
 name = "client"
 [dependencies]
-wbsl = "0.0.2"
+wbsl = {path = "./../../" }
 wjp = "1.0.2"
 aul = "1.3.1"
 whdp = "1.1.10"
