@@ -58,9 +58,9 @@ pub struct Health {
 impl Serialize for Health {
     fn serialize(&self) -> Values {
         Values::Struct(map!(
-            ("active", self.active.serialize()),
-            ("time", self.time.serialize()),
-            ("ram", self.ram.serialize())
+            ("active", &self.active),
+            ("time", &self.time),
+            ("ram", &self.ram)
         ))
     }
 }
@@ -75,8 +75,8 @@ impl Serialize for Ram {
         let total = (self.total as f64 / 1_000_000_f64).to_string() + " GB";
         let free = (self.free as f64 / 1_000_000_f64).to_string() + " GB";
         Values::Struct(map!(
-            ("total", total.serialize()),
-            ("free", free.serialize())
+            ("total", &total),
+            ("free", &free)
         ))
     }
 }
