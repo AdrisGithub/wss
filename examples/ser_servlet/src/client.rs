@@ -11,5 +11,5 @@ fn main() {
     let _ = stream.write_all(POST(String::from("Hello")).json().as_bytes());
     let mut hopefully = String::new();
     let _ = stream.read_to_string(&mut hopefully);
-    println!("{:?}",GET::deserialize(hopefully));
+    println!("{:?}", GET::deserialize(hopefully));
 }

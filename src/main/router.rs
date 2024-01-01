@@ -4,7 +4,7 @@ use whdp::HttpMethod;
 
 use crate::helper::HTTPFunction;
 use crate::methods::Methods;
-#[derive(Clone, PartialEq, Eq,Debug)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Router {
     map: HashMap<String, HashMap<HttpMethod, HTTPFunction>>,
 }

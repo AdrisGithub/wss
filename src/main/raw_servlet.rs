@@ -33,9 +33,9 @@ pub struct RawServletBuilder {
 
 impl RawServletBuilder {
     pub const fn new() -> Self {
-        Self{
+        Self {
             func: None,
-            listener: None
+            listener: None,
         }
     }
 

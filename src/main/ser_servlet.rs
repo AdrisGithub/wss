@@ -21,9 +21,9 @@ pub struct SerializeServletBuilder<I: Deserialize, O: Serialize> {
 
 impl<I: Deserialize, O: Serialize> SerializeServletBuilder<I, O> {
     pub const fn new() -> Self {
-        Self{
+        Self {
             listener: None,
-            func: None
+            func: None,
         }
     }
 

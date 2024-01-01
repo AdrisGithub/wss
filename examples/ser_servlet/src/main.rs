@@ -10,7 +10,6 @@ fn main() {
         .expect("Error starting the service");
 }
 
-
 fn basic_func(post: POST) -> GET {
     GET(post.0, increment())
 }

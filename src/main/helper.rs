@@ -8,8 +8,8 @@ use aul::level::Level;
 use aul::log;
 use aul::sensitive::Sens;
 use wbdl::Date;
-use whdp::{Request, Response};
 use whdp::resp_presets::ok;
+use whdp::{Request, Response};
 use wjp::{map, Serialize, Values};
 
 use crate::error::WBSLError;
@@ -50,7 +50,7 @@ pub(crate) fn health(_: Request) -> Response {
     ok(&Health::default().json())
 }
 
-#[derive(Clone,PartialOrd, PartialEq,Ord, Eq,Debug,Hash)]
+#[derive(Clone, PartialOrd, PartialEq, Ord, Eq, Debug, Hash)]
 pub struct Health {
     active: bool,
     time: String,
@@ -66,7 +66,7 @@ impl Serialize for Health {
         ))
     }
 }
-#[derive(PartialOrd, PartialEq,Ord, Eq,Copy, Clone,Hash,Debug,Default)]
+#[derive(PartialOrd, PartialEq, Ord, Eq, Copy, Clone, Hash, Debug, Default)]
 pub struct Ram {
     total: u64,
     free: u64,
@@ -76,10 +76,7 @@ impl Serialize for Ram {
     fn serialize(&self) -> Values {
         let total = (self.total as f64 / 1_000_000_f64).to_string() + " GB";
         let free = (self.free as f64 / 1_000_000_f64).to_string() + " GB";
-        Values::Struct(map!(
-            ("total", &total),
-            ("free", &free)
-        ))
+        Values::Struct(map!(("total", &total), ("free", &free)))
     }
 }
 
@@ -133,7 +130,9 @@ unsafe impl Middleware for AdditionalHeaders {
 }
 
 pub(crate) fn get_current_time() -> String {
-    Date::now().map(|s| s.to_string()).expect("Time went backwards")
+    Date::now()
+        .map(|s| s.to_string())
+        .expect("Time went backwards")
 }
 
 pub fn query(str: &str) -> HashMap<&str, &str> {
