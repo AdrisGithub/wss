@@ -1,7 +1,7 @@
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
-use wjp::{Deserialize, Serialize};
+use wjp::{Serialize};
 
 use ser_servlet::{GET, POST};
 
