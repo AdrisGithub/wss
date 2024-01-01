@@ -46,7 +46,7 @@ unsafe impl Middleware for Logger {
 }
 
 pub(crate) fn health(_: Request) -> Response {
-    ok(Health::default().json())
+    ok(&Health::default().json())
 }
 
 pub struct Health {

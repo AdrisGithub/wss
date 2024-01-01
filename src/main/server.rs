@@ -118,18 +118,18 @@ impl Server {
                 .next()
                 .and_then(|e| self.router.get_func(&String::from(e), req.get_method()));
 
-            let mut resp = not_found(String::new());
+            let mut resp = not_found("");
 
             if let Some(func) = func {
                 resp = func(req)
             } else if req.get_method().eq(&HttpMethod::Head) {
                 if let Some(func) = self.router.get_func(req.get_uri(), &HttpMethod::Get) {
                     resp = func(req);
-                    resp.set_body(String::new());
+                    resp.set_body("");
                 }
             } else if req.get_method().eq(&HttpMethod::Options) {
                 if let Some(func) = self.router.get(req.get_uri()) {
-                    resp = no_content(String::new());
+                    resp = no_content("");
                     let mut options = String::new();
                     let mut first = true;
                     for key in func.keys() {
