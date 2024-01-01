@@ -4,7 +4,7 @@ use whdp::HttpMethod;
 
 use crate::helper::HTTPFunction;
 use crate::methods::Methods;
-
+#[derive(Clone, PartialEq, Eq,Debug)]
 pub struct Router {
     map: HashMap<String, HashMap<HttpMethod, HTTPFunction>>,
 }
@@ -22,19 +22,19 @@ impl Router {
         }
     }
 
-    pub fn insert(&mut self, key: String, val: Methods) {
-        if let Some(tree) = self.map.get_mut(&key) {
+    pub fn insert(&mut self, key: &str, val: Methods) {
+        if let Some(tree) = self.map.get_mut(key) {
             tree.insert(val.get_type(), val.get_inner());
         } else {
             let mut init = HashMap::new();
             init.insert(val.get_type(), val.get_inner());
-            self.map.insert(key, init);
+            self.map.insert(String::from(key), init);
         }
     }
-    pub fn get(&self, key: &String) -> Option<&HashMap<HttpMethod, HTTPFunction>> {
+    pub fn get(&self, key: &str) -> Option<&HashMap<HttpMethod, HTTPFunction>> {
         self.map.get(key)
     }
-    pub fn get_func(&self, key: &String, method: &HttpMethod) -> Option<&HTTPFunction> {
+    pub fn get_func(&self, key: &str, method: &HttpMethod) -> Option<&HTTPFunction> {
         self.get(key).and_then(|e| e.get(method))
     }
 }

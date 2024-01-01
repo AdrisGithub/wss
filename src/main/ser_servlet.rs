@@ -8,20 +8,23 @@ use wjp::{Deserialize, Serialize};
 
 use crate::error::WBSLError;
 use crate::helper::{parse_stream, SerializableFunction};
-
+#[derive(Debug)]
 pub struct SerializeServlet<I: Deserialize, O: Serialize> {
     listener: TcpListener,
     func: SerializableFunction<I, O>,
 }
-
+#[derive(Debug)]
 pub struct SerializeServletBuilder<I: Deserialize, O: Serialize> {
     listener: Option<TcpListener>,
     func: Option<SerializableFunction<I, O>>,
 }
 
 impl<I: Deserialize, O: Serialize> SerializeServletBuilder<I, O> {
-    pub fn new() -> Self {
-        Self::default()
+    pub const fn new() -> Self {
+        Self{
+            listener: None,
+            func: None
+        }
     }
 
     pub fn with_func(mut self, func: SerializableFunction<I, O>) -> Self {
@@ -50,7 +53,7 @@ impl<I: Deserialize, O: Serialize> SerializeServletBuilder<I, O> {
             Err(WBSLError)
         }
     }
-    fn validate(&self) -> bool {
+    const fn validate(&self) -> bool {
         self.listener.is_some() && self.func.is_some()
     }
 }

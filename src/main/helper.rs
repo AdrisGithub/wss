@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufRead, BufReader, Read};
+use std::fs::read_to_string;
+use std::io::{BufRead, BufReader};
 use std::net::TcpStream;
 use std::str::Split;
 
@@ -26,6 +26,7 @@ pub(crate) fn parse_stream(stream: &TcpStream) -> Result<String, WBSLError> {
     String::from_utf8(received).map_err(|_e| WBSLError)
 }
 
+#[derive(PartialOrd, PartialEq, Ord, Eq, Copy, Clone, Default, Hash, Debug)]
 pub(crate) struct Logger(Level);
 
 impl From<Level> for Logger {
@@ -49,6 +50,7 @@ pub(crate) fn health(_: Request) -> Response {
     ok(&Health::default().json())
 }
 
+#[derive(Clone,PartialOrd, PartialEq,Ord, Eq,Debug,Hash)]
 pub struct Health {
     active: bool,
     time: String,
@@ -64,7 +66,7 @@ impl Serialize for Health {
         ))
     }
 }
-
+#[derive(PartialOrd, PartialEq,Ord, Eq,Copy, Clone,Hash,Debug,Default)]
 pub struct Ram {
     total: u64,
     free: u64,
@@ -92,11 +94,7 @@ impl Default for Health {
 }
 
 fn get_mem() -> Option<Ram> {
-    let mut s = String::new();
-    File::open("/proc/meminfo")
-        .ok()?
-        .read_to_string(&mut s)
-        .ok()?;
+    let s = read_to_string("/proc/meminfo").ok()?;
     let mut meminfo_hashmap = HashMap::new();
     for line in s.lines() {
         let mut split_line = line.split_whitespace();

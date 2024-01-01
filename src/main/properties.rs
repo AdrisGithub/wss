@@ -4,7 +4,7 @@ use aul::log;
 use aul::warn;
 use std::collections::HashMap;
 use std::fs::read_to_string;
-
+#[derive(PartialEq, Eq, Clone,Default,Debug)]
 struct Properties {
     props: HashMap<String, String>,
 }
@@ -38,7 +38,7 @@ impl Properties {
             .map(|str| str.to_string())
     }
 }
-
+#[derive(Clone, PartialEq, Eq,Debug,Default)]
 pub struct PropWrapper(Option<Properties>);
 
 impl PropWrapper {

@@ -1,7 +1,8 @@
 use whdp::HttpMethod;
+use whdp::resp_presets::not_found;
 
 use crate::helper::HTTPFunction;
-
+#[derive(Copy, Clone,PartialOrd, PartialEq,Ord, Eq,Debug,Hash)]
 pub enum Methods {
     Get(HTTPFunction),
     Post(HTTPFunction),
@@ -14,8 +15,14 @@ pub enum Methods {
     Trace(HTTPFunction),
 }
 
+impl Default for Methods{
+    fn default() -> Self {
+        Self::Get(|_|not_found(""))
+    }
+}
+
 impl Methods {
-    pub fn get_inner(self) -> HTTPFunction {
+    pub const fn get_inner(self) -> HTTPFunction {
         match self {
             Methods::Get(s) => s,
             Methods::Post(s) => s,
@@ -28,7 +35,7 @@ impl Methods {
             Methods::Put(s) => s,
         }
     }
-    pub fn get_type(&self) -> HttpMethod {
+    pub const fn get_type(&self) -> HttpMethod {
         match self {
             Methods::Get(_) => HttpMethod::Get,
             Methods::Post(_) => HttpMethod::Post,

@@ -14,13 +14,11 @@ use crate::methods::Methods;
 use crate::methods::Methods::Get;
 use crate::middleware::Middleware;
 use crate::router::Router;
-
 pub struct Server {
     listener: TcpListener,
     middlewares: Vec<Box<dyn Middleware>>,
     router: Router,
 }
-
 pub struct ServerBuilder {
     socket: Option<SocketAddr>,
     middlewares: Vec<Box<dyn Middleware>>,
@@ -55,7 +53,7 @@ impl ServerBuilder {
     pub fn route(mut self, route: &str, methods: Methods) -> Self {
         let mut temp = self.pre.to_string();
         temp.push_str(route);
-        self.router.insert(temp, methods);
+        self.router.insert(&temp, methods);
         self
     }
     pub fn group(mut self, pre: &str, func: fn(Self) -> Self) -> Self {

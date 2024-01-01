@@ -7,7 +7,7 @@ use aul::log;
 
 use crate::error::WBSLError;
 use crate::helper::{parse_stream, RawFunction};
-
+#[derive(Debug)]
 pub struct RawServlet {
     listener: TcpListener,
     func: RawFunction,
@@ -20,8 +20,8 @@ impl RawServlet {
             let _ = stream.write_all(result.as_bytes());
         }
     }
-    pub fn builder() -> RawServletBuilder {
-        RawServletBuilder::default()
+    pub const fn builder() -> RawServletBuilder {
+        RawServletBuilder::new()
     }
 }
 
@@ -32,8 +32,11 @@ pub struct RawServletBuilder {
 }
 
 impl RawServletBuilder {
-    pub fn new() -> Self {
-        Self::default()
+    pub const fn new() -> Self {
+        Self{
+            func: None,
+            listener: None
+        }
     }
 
     pub fn with_func(mut self, func: RawFunction) -> Self {
@@ -62,7 +65,7 @@ impl RawServletBuilder {
             Err(WBSLError)
         }
     }
-    fn validate(&self) -> bool {
+    const fn validate(&self) -> bool {
         self.listener.is_some() && self.func.is_some()
     }
 }
