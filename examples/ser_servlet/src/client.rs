@@ -1,7 +1,7 @@
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
-use wjp::{Serialize};
+use wjp::{Deserialize, Serialize};
 
 use ser_servlet::{GET, POST};
 
@@ -11,5 +11,5 @@ fn main() {
     let _ = stream.write_all(POST(String::from("Hello")).json().as_bytes());
     let mut hopefully = String::new();
     let _ = stream.read_to_string(&mut hopefully);
-    println!("{:?}", GET::deserialize(hopefully));
+    println!("{:?}", GET::deserialize_str(hopefully.as_str()));
 }
